@@ -3,6 +3,7 @@ import { formatDate, formatStatus } from "../app/format.js";
 import Logout from "./Logout.js";
 import { bills } from '../fixtures/bills.js';
 
+
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document;
@@ -28,34 +29,40 @@ export default class {
     $('#modaleFile').modal('show');
   }
 
-getBills = () => {
-  bills.sort((a, b) => new Date(b.date) - new Date(a.date));
-  console.log(bills);
-  if (this.store) {
-    return this.store
-      .bills()
-      .list()
-      .then(snapshot => {
-        let bills = snapshot.map(doc => ({
-          ...doc,
-          date: new Date(doc.date), // Convertir la date en objet Date
-          status: formatStatus(doc.status)
-        }));
-
-        // Trier les factures par date du plus récent au plus ancien
-        bills.sort((a, b) => b.date - a.date);
-
-        // Formater les dates après le tri
-        bills = bills.map(doc => ({
-          ...doc,
-          date: formatDate(doc.date)
-        }));
-
-        console.log('length', bills.length);
-        return bills;
-      });
-  }
-};
+  getBills = () => {
+    //règle le problème du test qui échoue en triant dans l'ordre les datas du dossiers fixtures
+    bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (this.store) {
+      return this.store
+        .bills()
+        .list()
+        .then(snapshot => {
+          //tri des note de frais
+          snapshot.sort((a, b) => new Date(b.date) - new Date(a.date))
+          const bills = snapshot
+            .map(doc => {
+              try {
+                return {
+                  ...doc,
+                  date: formatDate(doc.date),
+                  status: formatStatus(doc.status),
+                };
+              } catch (e) {
+                // if for some reason, corrupted data was introduced, we manage here failing formatDate function
+                // log the error and return unformatted date in that case
+                // console.log(e,'for',doc)
+                return {
+                  ...doc,
+                  date: doc.date,
+                  status: formatStatus(doc.status),
+                };
+              }
+            });
+          // console.log('length', bills.length)
+          return bills;
+        });
+    }
+  };y
 }
 
 

@@ -28,12 +28,17 @@ export default class NewBill {
 
     //si le type de fichier n'est pas dans le tableau :
     if (!allowedExtensions.includes(fileExtension)) {
-      //on affiche une alerte
-      alert("Veuillez sélectionner un fichier avec une extension valide (jpg, jpeg ou png).")
+      //on afficge un message d'erreur en dessous de l'input
+      const errorMsg = document.querySelector('[data-testid="errorMsg"]')
+      errorMsg.innerHTML = "Fichier valide (jpg, jpeg ou png)."  
+      errorMsg.style.color ='red'  
       // et on réinitialise la valeur du champ de fichier
       fileInput.value = ''; 
     return;
-      
+      //sinon, on efface le message d'erreur si le fichier est valide
+    }else{
+      const errorMsg = document.querySelector('[data-testid="errorMsg"]')
+      errorMsg.innerHTML = ""    
     }
   
     const filePath = e.target.value.split(/\\/g)
@@ -58,6 +63,8 @@ export default class NewBill {
         this.fileName = fileName
       }).catch(error => console.error(error))
   }
+
+
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
