@@ -116,3 +116,74 @@ describe("Given I am connected as an employee", () => {
   });
   
 })
+
+describe("When an error occurs on API", () => {
+  test("Add bills from an API and fails with 404 message error", async () => {
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Employee",
+      })
+    );
+
+    document.body.innerHTML = NewBillUI();
+
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
+    const postSpy = jest.spyOn(console, "error");
+
+    const store = {
+      bills: jest.fn(() => newBill.store),
+      create: jest.fn(() => Promise.resolve({})),
+      update: jest.fn(() => Promise.reject(new Error("404"))),
+    };
+
+    const newBill = new NewBill({ document, onNavigate, store, localStorage });
+    newBill.isImgFormatValid = true;
+
+    // Submit form
+    const form = screen.getByTestId("form-new-bill");
+    const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+    form.addEventListener("submit", handleSubmit);
+
+    fireEvent.submit(form);
+    await new Promise(process.nextTick);
+    expect(postSpy).toBeCalledWith(new Error("404"));
+  });
+
+  test("Add bills from an API and fails with 500 message error", async () => {
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Employee",
+      })
+    );
+
+    document.body.innerHTML = NewBillUI();
+
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
+    const postSpy = jest.spyOn(console, "error");
+
+    const store = {
+      bills: jest.fn(() => newBill.store),
+      create: jest.fn(() => Promise.resolve({})),
+      update: jest.fn(() => Promise.reject(new Error("500"))),
+    };
+
+    const newBill = new NewBill({ document, onNavigate, store, localStorage });
+    newBill.isImgFormatValid = true;
+
+    // Submit form
+    const form = screen.getByTestId("form-new-bill");
+    const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+    form.addEventListener("submit", handleSubmit);
+
+    fireEvent.submit(form);
+    await new Promise(process.nextTick);
+    expect(postSpy).toBeCalledWith(new Error("500"));
+  });
+});
+
