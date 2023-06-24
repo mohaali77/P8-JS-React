@@ -41,6 +41,12 @@ export default class Login {
     e.preventDefault()
     const user = {
       type: "Admin",
+
+      //Bug résolu : problème : le querySelector récupérait les infos du de l'employé, et non de l'admin.
+
+      /*email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
+      password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,*/
+      
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
       password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
       status: "connected"

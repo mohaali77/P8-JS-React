@@ -37,7 +37,7 @@ export default class {
         .bills()
         .list()
         .then(snapshot => {
-          //tri des note de frais
+          //tri les note de frais par date sur la page Bills
           snapshot.sort((a, b) => new Date(b.date) - new Date(a.date))
           const bills = snapshot
             .map(doc => {
