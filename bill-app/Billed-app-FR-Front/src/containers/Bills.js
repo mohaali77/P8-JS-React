@@ -30,14 +30,14 @@ export default class {
   }
 
   getBills = () => {
-    //règle le problème du test qui échoue en triant dans l'ordre les datas du dossiers fixtures
+    //corrige le problème du test qui échoue en triant par date les données du dossiers fixtures
     bills.sort((a, b) => new Date(b.date) - new Date(a.date));
     if (this.store) {
       return this.store
         .bills()
         .list()
         .then(snapshot => {
-          //tri les note de frais par date sur la page Bills
+          //tri les notes de frais par date sur la page Bills
           snapshot.sort((a, b) => new Date(b.date) - new Date(a.date))
           const bills = snapshot
             .map(doc => {

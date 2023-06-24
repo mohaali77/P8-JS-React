@@ -124,7 +124,7 @@ describe("When an error occurs on API", () => {
 
     window.onNavigate(ROUTES_PATH.Bills);
     await new Promise(process.nextTick);
-    const message = screen.getByText(/Erreur 404/);
+    const message = await screen.getByText(/Erreur 404/);
     expect(message).toBeTruthy();
   });
 
@@ -134,7 +134,7 @@ describe("When an error occurs on API", () => {
 
     window.onNavigate(ROUTES_PATH.Bills);
     await new Promise(process.nextTick);
-    const message = screen.getByText(/Erreur 500/);
+    const message = await screen.getByText(/Erreur 500/);
     expect(message).toBeTruthy();
   });
 });
